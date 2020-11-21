@@ -23,15 +23,15 @@ public class EventRepository {
     }
 
     public void insert(Event event){
-      new InsertNoteAsyncTask(eventDao).execute(event);
+      new InsertEventAsyncTask(eventDao).execute(event);
     }
 
     public LiveData<List<Event>> getAllEvents(){return allEvents;}
 
-    private static class InsertNoteAsyncTask extends AsyncTask<Event,Void,Void>{
+    private static class InsertEventAsyncTask extends AsyncTask<Event,Void,Void>{
         private EventDao eventDao;
 
-        public InsertNoteAsyncTask(EventDao eventDao) {
+        public InsertEventAsyncTask(EventDao eventDao) {
             this.eventDao = eventDao;
         }
 

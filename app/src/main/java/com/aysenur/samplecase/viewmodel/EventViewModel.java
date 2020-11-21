@@ -34,7 +34,7 @@ public class EventViewModel extends AndroidViewModel {
     public EventViewModel(@NonNull Application application) {
         super(application);
         repository = new EventRepository(application);
-       // allEvents=repository.getAllEvents();
+       allEvents=repository.getAllEvents();
 
     }
 

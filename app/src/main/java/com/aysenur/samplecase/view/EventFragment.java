@@ -1,5 +1,6 @@
 package com.aysenur.samplecase.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +43,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         cancel=view.findViewById(R.id.cancel);
 
         save.setOnClickListener(this);
+        cancel.setOnClickListener(this);
 
         return view;
     }
@@ -64,9 +66,18 @@ public class EventFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        Toast.makeText(getActivity(), "TIKLANDI", Toast.LENGTH_SHORT).show();
 
-       // saveEvent();
+        switch (v.getId()){
+            case R.id.add:
+                saveEvent();
+                break;
+            case R.id.cancel:
+               Intent i =new Intent(getActivity(), MapsActivity.class);
+               startActivity(i);
+                break;
+            default:
+        }
+
     }
 
 
@@ -79,12 +90,10 @@ public class EventFragment extends Fragment implements View.OnClickListener {
             return;
         }
 
-        Bundle data = new Bundle();
-
-        data.putString(EXTRA_TITLE,title);
-        data.putString(EXTRA_DESC,desc);
-        EventFragment fragment = new EventFragment();
-        fragment.setArguments(data);
+        Intent i=new Intent(getActivity(),MainActivity.class);
+        i.putExtra(EXTRA_TITLE,title);
+        i.putExtra(EXTRA_DESC,desc);
+        startActivity(i);
         //.navigateTo(fragment);
     }
 
