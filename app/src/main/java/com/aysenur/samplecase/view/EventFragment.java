@@ -22,8 +22,6 @@ public class EventFragment extends Fragment implements View.OnClickListener {
 
     public static final String EXTRA_TITLE ="EXTRA_TITLE";
     public static final String EXTRA_DESC ="EXTRA_DESC";
-
-
     private EventViewModel eViewModel;
     private EditText jobTitle;
     private EditText jobDesc;
@@ -47,6 +45,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
 
         return view;
     }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -72,8 +71,8 @@ public class EventFragment extends Fragment implements View.OnClickListener {
                 saveEvent();
                 break;
             case R.id.cancel:
-               Intent i =new Intent(getActivity(), MapsActivity.class);
-               startActivity(i);
+                openDialog();
+
                 break;
             default:
         }
@@ -94,8 +93,11 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         i.putExtra(EXTRA_TITLE,title);
         i.putExtra(EXTRA_DESC,desc);
         startActivity(i);
+        getActivity().finish();
         //.navigateTo(fragment);
     }
-
-
+        public void openDialog(){
+        Dialog dialog= new Dialog();
+        dialog.show(getFragmentManager(),"Dialog");
+        }
 }
