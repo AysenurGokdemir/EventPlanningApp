@@ -1,4 +1,4 @@
-package com.aysenur.samplecase.model;
+package com.aysenur.samplecase.db.model;
 
 import android.util.Patterns;
 

@@ -2,7 +2,7 @@ package com.aysenur.samplecase.viewmodel;
 
 import android.view.View;
 
-import com.aysenur.samplecase.model.User;
+import com.aysenur.samplecase.db.model.User;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;

@@ -5,10 +5,9 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.aysenur.samplecase.MapsActivity;
 import com.aysenur.samplecase.R;
 import com.aysenur.samplecase.databinding.ActivityLoginBinding;
-import com.aysenur.samplecase.model.User;
+import com.aysenur.samplecase.db.model.User;
 import com.aysenur.samplecase.viewmodel.LoginViewModel;
 
 import java.util.Objects;

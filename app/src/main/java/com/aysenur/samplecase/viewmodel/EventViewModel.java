@@ -45,4 +45,5 @@ public class EventViewModel extends AndroidViewModel {
     }
 
     public  LiveData<List<Event>> getAllEvents(){return allEvents;}
+
 }
