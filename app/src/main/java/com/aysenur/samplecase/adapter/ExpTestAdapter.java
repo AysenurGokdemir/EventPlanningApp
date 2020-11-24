@@ -6,14 +6,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aysenur.samplecase.R;
 import com.aysenur.samplecase.db.model.Event;
 
 import java.util.List;
 
-public class ExpTestAdapter extends BaseExpandableListAdapter {
+public class ExpTestAdapter extends BaseExpandableListAdapter  {
 
     private Context context;
     List<Event> expandableListDetail;
@@ -23,11 +25,7 @@ public class ExpTestAdapter extends BaseExpandableListAdapter {
         this.expandableListDetail = expandableListDetail;
 
     }
-    public void setEvents(List<Event> events){
-        this.expandableListDetail=events;
-        notifyDataSetChanged();
 
-    }
     @Override
     public View getGroupView(int listPosition, boolean isExpanded, View convertView, ViewGroup parent) {
 
@@ -38,8 +36,7 @@ public class ExpTestAdapter extends BaseExpandableListAdapter {
         }
         TextView listTitleTextview=convertView.findViewById(R.id.tvPackedName);
         listTitleTextview.setTypeface(null, Typeface.BOLD);
-        listTitleTextview.setText(expandableListDetail.get(listPosition).getJobName());
-        //listTitleTextview.setText(listTitle);
+        listTitleTextview.setText(listTitle);
 
         return convertView;
     }
@@ -62,7 +59,8 @@ public class ExpTestAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int listPosition, int expandedListPostion) {
-        return expandedListPostion;
+        return expandableListDetail.get(listPosition).getJobName();
+        //return expandedListPostion;
     }
 
     @Override
@@ -84,13 +82,22 @@ public class ExpTestAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(int listPosition, final int expandedListPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+        Button btn=convertView.findViewById(R.id.btn_go_location);
 
         if(convertView == null){
             LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             convertView=layoutInflater.inflate(R.layout.list_child,null);
+
         }
 
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Toast.makeText(context, "okay"+expandableListDetail.get(listPosition).getJobName(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
         return convertView;
     }
@@ -99,4 +106,6 @@ public class ExpTestAdapter extends BaseExpandableListAdapter {
     public boolean isChildSelectable(int listPosition, int expandedListPosition) {
         return true;
     }
+
+
 }
