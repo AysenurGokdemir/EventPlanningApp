@@ -92,15 +92,7 @@ public class ExpTestAdapter extends BaseExpandableListAdapter  {
         return true;
     }
 
-    public interface ButtonClick{
-        void detailButtonOnClick(View v, int position);
-    }
 
-    private ButtonClick callback;
-
-    public void setButtonClickListener(ButtonClick listener){
-        this.callback=listener;
-    }
 
     @Override
     public View getChildView(int listPosition, final int expandedListPosition, boolean isLastChild, View convertView, ViewGroup parent) {
@@ -136,6 +128,7 @@ public class ExpTestAdapter extends BaseExpandableListAdapter  {
             public void onClick(View view) {
                 String title=expandableListDetail.get(listPosition).getJobName();
                 Intent data= new Intent(context, MapsActivity.class);
+                data.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 data.putExtra(EXTRA_TITLE,title);
                 context.startActivity(data);
                 Toast.makeText(context, "okay"+expandableListDetail.get(listPosition).getJobName(), Toast.LENGTH_SHORT).show();
@@ -144,5 +137,13 @@ public class ExpTestAdapter extends BaseExpandableListAdapter  {
 
         return convertView;
     }
+    public interface ButtonClick{
+        void detailButtonOnClick(View v);
+    }
 
+    private ButtonClick callback;
+
+    public void setButtonClickListener(ButtonClick listener){
+        this.callback=listener;
+    }
 }

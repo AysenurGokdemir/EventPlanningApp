@@ -6,12 +6,9 @@ import android.location.Geocoder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
-import android.widget.Toast;
 
 import com.aysenur.samplecase.R;
 import com.aysenur.samplecase.adapter.ExpTestAdapter;
@@ -21,26 +18,21 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
 
 import java.io.IOException;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.Observer;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProviders;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener,
-        GoogleMap.OnMarkerDragListener, NavigationView.OnNavigationItemSelectedListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,GoogleMap.OnMapClickListener,
+        GoogleMap.OnMarkerDragListener {
     public static final int ADD_NOTE_REQUEST = 1;
 
     public static final String TAG = "MapsActivity";
@@ -58,12 +50,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_maps);
 
-
-        getInit();
-        setExpandableListView();
-        expandableListView = findViewById(R.id.exp_list_view);
+       // getInit();
+       // setExpandableListView();
+       // expandableListView = findViewById(R.id.exp_list_view);
 
             FloatingActionButton btnAddNote = findViewById(R.id.btn_add);
 
@@ -72,10 +63,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mapFragment.getMapAsync(this);
                 geocoder = new Geocoder(this);
 
+
                 btnAddNote.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         btnAddNote.hide();
+                        mMap.clear();
                         handler = new Handler();
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragment_container, EventFragment.newInstance())
@@ -84,6 +77,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
 
                 });
+
             }
 
 
@@ -93,31 +87,58 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap = googleMap;
         mMap.setOnMapClickListener(this);
         mMap.setOnMarkerDragListener(this);
+        LatLng latLng;
         // Add a marker in Sydney and move the camera
 
         try {
-            List<Address> addreses = geocoder.getFromLocationName("sydney", 1);
+            List<Address> addreses = geocoder.getFromLocation(-34,151, 1);
             if (addreses.size() > 0) {
                 Address address = addreses.get(0);
                 LatLng london = new LatLng(address.getLatitude(), address.getLongitude());
                 MarkerOptions markerOptions = new MarkerOptions()
-                        .position(london)
+                        .position(london).draggable(true)
                         .title(address.getLocality());
                 mMap.addMarker(markerOptions);
+
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(london, 16));
+
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        mMap.getUiSettings().setMapToolbarEnabled(true);
+        goLocation();
+
 
     }
+
+    public void goLocation(){
+        Intent data = getIntent();
+        String title = data.getStringExtra(ExpTestAdapter.EXTRA_TITLE);
+
+        if (data!=null){
+            Geocoder geocoder = new Geocoder(MapsActivity.this);
+            try {
+                List<Address> addressList=geocoder.getFromLocationName(title,1);
+                if (addressList.size() > 0) {
+                    Address address = addressList.get(0);
+                    LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(latLng).title(title));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
 
     @Override
     public void onMapClick(LatLng latLng) {
 
-        Log.d(TAG, "onMapLongClick" + latLng.toString());
         try {
             List<Address> addreses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
             if (addreses.size() > 0) {
@@ -126,7 +147,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 mMap.addMarker(new MarkerOptions()
                         .position(latLng)
                         .title(streetAdress) //marker üzerinde adres yazıyor
-                        .draggable(true) //suruklenebilir
+                        .draggable(true).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)) //suruklenebilir
 
 
                 );
@@ -140,23 +161,45 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+
     @Override
     public void onMarkerDragStart(Marker marker) {
-        Log.d(TAG, "OnMarkerDragStart");
+        Log.d(TAG, "OnMarkerDragStart" + marker.getPosition().latitude);
+        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
     }
 
     @Override
     public void onMarkerDrag(Marker marker) {
-        Log.d(TAG, "OnMarkerDrag");
+        Log.d(TAG, "OnMarkerDrag"+ marker.getPosition());
+       // marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
 
     }
 
     @Override
     public void onMarkerDragEnd(Marker marker) {
-        Log.d(TAG, "OnMarkerDragEnd");
-
+        Log.d(TAG, "OnMarkerDragEnd"+marker.getPosition());
+        //marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+        LatLng latLng = marker.getPosition();
+        try {
+            List<Address> addreses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+            if (addreses.size() > 0) {
+                Address address = addreses.get(0);
+                String streetAdress = address.getAddressLine(0);
+                marker.setTitle(streetAdress);
+                marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                eventViewModel= ViewModelProviders.of(MapsActivity.this).get(EventViewModel.class);
+                eventViewModel.init();
+                eventViewModel.sendData(streetAdress);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
+
+
+    /*
     public void getInit(){
 
         setSupportActionBar(toolbar);
@@ -169,6 +212,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         toggle.syncState();
         navView.setNavigationItemSelectedListener(this);
     }
+
+
 
     @Override
     public void onBackPressed() {
@@ -231,28 +276,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     }
-
-    public void goLocation(){
-        Intent data = getIntent();
-        String title = data.getStringExtra(ExpTestAdapter.EXTRA_TITLE);
-        String desc = data.getStringExtra(ExpTestAdapter.EXTRA_DESC);
-        List<Address> addressList= null;
-        if (data!=null){
-            Geocoder geocoder = new Geocoder(MapsActivity.this);
-            try {
-                addressList=geocoder.getFromLocationName(title,1);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if (addressList.size() > 0) {
-                Address address = addressList.get(0);
-                LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                mMap.addMarker(new MarkerOptions().position(latLng).title(title));
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
-            }
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.add_event_menu,menu);
@@ -270,6 +293,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         return false;
     }
+*/
+
+
 
 
 }
