@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.aysenur.samplecase.R;
+import com.aysenur.samplecase.db.model.Event;
 import com.aysenur.samplecase.viewmodel.EventViewModel;
 
 import androidx.annotation.NonNull;
@@ -25,7 +26,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
     private EventViewModel eViewModel;
     private EditText jobTitle;
     private EditText jobDesc;
-    Button save;
+    private Button save;
     private Button cancel;
 
     public static EventFragment newInstance(){return new EventFragment();}
@@ -39,9 +40,9 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         jobDesc=view.findViewById(R.id.edt_desc);
         save=view.findViewById(R.id.add);
         cancel=view.findViewById(R.id.cancel);
-
         save.setOnClickListener(this);
         cancel.setOnClickListener(this);
+
 
         return view;
     }
@@ -55,11 +56,15 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         ViewModelProviders.of(getActivity()).get(EventViewModel.class).getMessage().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                jobTitle.setText(s);
-                Toast.makeText(getContext(),s, Toast.LENGTH_SHORT).show();
+                if (s!=null) {
+                    jobTitle.setText(s);
+                    Toast.makeText(getContext(),s, Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    startActivity(new Intent(getActivity(),ExpTestMain.class));
+                }
             }
         });
-
 
     }
 
@@ -74,28 +79,29 @@ public class EventFragment extends Fragment implements View.OnClickListener {
                 openDialog();
 
                 break;
+
             default:
         }
 
     }
 
-
     private void saveEvent(){
         String title=jobTitle.getText().toString();
         String desc=jobDesc.getText().toString();
-
+        eViewModel = ViewModelProviders.of(this).get(EventViewModel.class);
         if (title.trim().isEmpty() || desc.trim().isEmpty()) {
             Toast.makeText(getActivity(), "please insert a title and description", Toast.LENGTH_SHORT).show();
             return;
+        }else{
+            Event event = new Event(title, desc);
+            eViewModel.insert(event);
+            Toast.makeText(getActivity(), "Form Saved", Toast.LENGTH_SHORT).show();
+            Intent i=new Intent(getActivity(),ExpTestMain.class);
+            startActivity(i);
         }
-
-        Intent i=new Intent(getActivity(),MainActivity.class);
-        i.putExtra(EXTRA_TITLE,title);
-        i.putExtra(EXTRA_DESC,desc);
-        startActivity(i);
-        getActivity().finish();
-        //.navigateTo(fragment);
     }
+
+
         public void openDialog(){
         Dialog dialog= new Dialog();
         dialog.show(getFragmentManager(),"Dialog");

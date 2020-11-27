@@ -27,23 +27,20 @@ public class EventViewModel extends AndroidViewModel {
     }
 
 
-    public LiveData<String> getMessage(){
-        return stringMutableLiveData;
-    }
+    public LiveData<String> getMessage(){return stringMutableLiveData;}
 
     public EventViewModel(@NonNull Application application) {
         super(application);
         repository = new EventRepository(application);
-       allEvents=repository.getAllEvents();
+        allEvents=repository.getAllEvents();
 
     }
 
-    // butona tıkladıgımızda cagrılacak
-    public void insert(Event event){
+    public void insert(Event event){repository.insert(event);}
 
-        repository.insert(event);
+    public LiveData<List<Event>> getAllEvents(){
+        return allEvents;
+
     }
-
-    public  LiveData<List<Event>> getAllEvents(){return allEvents;}
 
 }

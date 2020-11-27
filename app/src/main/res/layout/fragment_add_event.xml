@@ -20,7 +20,17 @@
         android:background="@color/white"
         android:gravity="center_vertical"
         android:orientation="vertical"
-        android:padding="50dp">
+        android:weightSum="3">
+
+        <LinearLayout
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:gravity="bottom"
+            android:orientation="vertical">
 
         <EditText
             android:id="@+id/edt_title"
@@ -34,47 +44,40 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Description"
-            android:inputType="textImeMultiLine"></EditText>
+            android:inputType="textImeMultiLine"
+            android:layout_marginBottom="50dp"></EditText>
+
+    </LinearLayout>
+
 
         <LinearLayout
-            android:layout_width="50dp"
-            android:layout_height="50dp"></LinearLayout>
-
-        <LinearLayout
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
+            android:gravity="top"
             android:orientation="horizontal">
 
             <Button
+                android:layout_weight="1"
                 android:id="@+id/cancel"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@color/red"
+                android:layout_marginRight="20dp"
                 android:text="IPTAL"></Button>
-            <LinearLayout
-                android:layout_width="50dp"
-                android:layout_height="wrap_content">
 
-            </LinearLayout>
+
             <Button
+                android:layout_weight="1"
                 android:id="@+id/add"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@color/green"
                 android:text="KAYDET"></Button>
 
         </LinearLayout>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btn_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="32dp"
-            android:src="@drawable/ic_check">
-
-        </com.google.android.material.floatingactionbutton.FloatingActionButton>
-
 
     </LinearLayout>
 
