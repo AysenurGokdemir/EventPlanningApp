@@ -18,7 +18,7 @@ public class NotEditable extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_not_editable_form);
+        setContentView(R.layout.fragment_add_event);
         edt_title=findViewById(R.id.edt_title);
         edt_desc=findViewById(R.id.edt_desc);
         Intent data = getIntent();
