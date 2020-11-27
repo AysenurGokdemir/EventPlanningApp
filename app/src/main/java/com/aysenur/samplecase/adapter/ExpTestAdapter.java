@@ -26,15 +26,11 @@ public class ExpTestAdapter extends BaseExpandableListAdapter  {
     Button btn_location;
     Button btn_detail;
 
-    public ExpTestAdapter(Context context) {
-        this.context=context;
-
-    }
+    public ExpTestAdapter(Context context) {this.context=context;}
 
     public void setData(List<Event> eventList){
         this.expandableListDetail=eventList;
         notifyDataSetChanged();
-
     }
 
     @Override
@@ -61,8 +57,6 @@ public class ExpTestAdapter extends BaseExpandableListAdapter  {
         return 1;
     }
 
-
-    //adress bilgisi set edilcek
     @Override
     public Object getGroup(int listPosition) {
         return expandableListDetail.get(listPosition).getJobName();
@@ -71,7 +65,6 @@ public class ExpTestAdapter extends BaseExpandableListAdapter  {
     @Override
     public Object getChild(int listPosition, int expandedListPostion) {
         return expandableListDetail.get(listPosition).getJobName();
-        //return expandedListPostion;
     }
 
     @Override
@@ -89,15 +82,10 @@ public class ExpTestAdapter extends BaseExpandableListAdapter  {
         return false;
     }
 
-
-
-
     @Override
     public boolean isChildSelectable(int listPosition, int expandedListPosition) {
         return true;
     }
-
-
 
     @Override
     public View getChildView(int listPosition, final int expandedListPosition, boolean isLastChild, View convertView, ViewGroup parent) {
@@ -122,9 +110,6 @@ public class ExpTestAdapter extends BaseExpandableListAdapter  {
                 data.putExtra(EXTRA_TITLE,title);
                 data.putExtra(EXTRA_DESC,desc);
                 context.startActivity(data);
-                /*if (callback !=null){
-                    callback.detailButtonOnClick(view,listPosition);
-                }*/
             }
         });
 
@@ -136,19 +121,12 @@ public class ExpTestAdapter extends BaseExpandableListAdapter  {
                 data.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 data.putExtra(EXTRA_TITLE,title);
                 context.startActivity(data);
+
                 Toast.makeText(context, "okay"+expandableListDetail.get(listPosition).getJobName(), Toast.LENGTH_SHORT).show();
             }
         });
 
         return convertView;
     }
-    public interface ButtonClick{
-        void detailButtonOnClick(View v);
-    }
 
-    private ButtonClick callback;
-
-    public void setButtonClickListener(ButtonClick listener){
-        this.callback=listener;
-    }
 }
