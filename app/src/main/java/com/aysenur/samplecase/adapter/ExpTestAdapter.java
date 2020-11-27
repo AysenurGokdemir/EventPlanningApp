@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.aysenur.samplecase.R;
 import com.aysenur.samplecase.db.model.Event;
-import com.aysenur.samplecase.view.MapsActivity;
+import com.aysenur.samplecase.view.ExpTestMain;
 import com.aysenur.samplecase.view.NotEditable;
 
 import java.util.List;
@@ -26,9 +26,14 @@ public class ExpTestAdapter extends BaseExpandableListAdapter  {
     Button btn_location;
     Button btn_detail;
 
-    public ExpTestAdapter(Context context, List<Event> expandableListDetail) {
-        this.context = context;
-        this.expandableListDetail = expandableListDetail;
+    public ExpTestAdapter(Context context) {
+        this.context=context;
+
+    }
+
+    public void setData(List<Event> eventList){
+        this.expandableListDetail=eventList;
+        notifyDataSetChanged();
 
     }
 
@@ -127,7 +132,7 @@ public class ExpTestAdapter extends BaseExpandableListAdapter  {
             @Override
             public void onClick(View view) {
                 String title=expandableListDetail.get(listPosition).getJobName();
-                Intent data= new Intent(context, MapsActivity.class);
+                Intent data= new Intent(context, ExpTestMain.class);
                 data.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 data.putExtra(EXTRA_TITLE,title);
                 context.startActivity(data);

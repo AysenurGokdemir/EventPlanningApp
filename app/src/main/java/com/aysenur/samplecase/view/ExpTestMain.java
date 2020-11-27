@@ -4,9 +4,9 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
@@ -18,7 +18,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -37,14 +39,18 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 
-public class ExpTestMain extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback, GoogleMap.OnMapClickListener{
+public class ExpTestMain extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
+        OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerDragListener{
     public static final int ADD_NOTE_REQUEST = 1;
+    public static final String TAG = "Maps";
     private EventViewModel eViewModel;
     ExpandableListView expandableListView;
     ExpTestAdapter expandableListAdapter;
     private Toolbar toolbar;
     private GoogleMap mMap;
     private Geocoder geocoder;
+    FloatingActionButton fabAdd;
+    FloatingActionButton fabCheck;
 
 
     @Override
@@ -52,24 +58,56 @@ public class ExpTestMain extends AppCompatActivity implements NavigationView.OnN
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getInit();
+
+        eViewModel = ViewModelProviders.of(this).get(EventViewModel.class);
+
+        expandableListAdapter=new ExpTestAdapter(this);
+
         setExpandableListView();
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         geocoder = new Geocoder(this);
-        FloatingActionButton btnAddNote = findViewById(R.id.btn_add);
-        btnAddNote.setOnClickListener(new View.OnClickListener() {
+
+        fabAdd = findViewById(R.id.btn_add);
+        fabCheck = findViewById(R.id.btn_add);
+
+
+            this.runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    fabAdd = findViewById(R.id.btn_add);
+                    fabAdd.hide();
+                    fabCheck.show();
+                }
+            });
+
+        /*
+        fabAdd.setOnClickListener(this);
+        fabCheck.setOnClickListener(this);
+        /*/
+        /*
+        fabAdd.show();
+        fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                btnAddNote.hide();
+                fabAdd.hide();
+                fabCheck.show();
+                //fabAdd.hide();
 
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, EventFragment.newInstance())
                         .commit();
                 startActivityForResult(getIntent(), ADD_NOTE_REQUEST);
+
+
             }
 
         });
+
+*/
     }
 
     void setExpandableListView() {
@@ -89,6 +127,7 @@ public class ExpTestMain extends AppCompatActivity implements NavigationView.OnN
 
     public void expandableListDataPump() {
         eViewModel = ViewModelProviders.of(this).get(EventViewModel.class);
+        /*
         Intent data = getIntent();
         String title = data.getStringExtra(EventFragment.EXTRA_TITLE);
         String desc = data.getStringExtra(EventFragment.EXTRA_DESC);
@@ -98,14 +137,18 @@ public class ExpTestMain extends AppCompatActivity implements NavigationView.OnN
 
         Toast.makeText(this, "Note Saved", Toast.LENGTH_SHORT).show();
 
-
+*/
         eViewModel.getAllEvents().observe(this, new Observer<List<Event>>() {
             @Override
             public void onChanged(List<Event> events) {
                 //expandableListAdapter.setEvents(events);
-                expandableListAdapter=new ExpTestAdapter(getApplicationContext(),events);
-                expandableListView.setAdapter(expandableListAdapter);
-                expandableListAdapter.notifyDataSetChanged();
+                if (events.size()>0){
+                    expandableListAdapter.setData(events);
+                    expandableListView.setAdapter(expandableListAdapter);
+                }
+
+
+                //expandableListAdapter.notifyDataSetChanged();
 
                 expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
                     @Override
@@ -165,34 +208,53 @@ public class ExpTestMain extends AppCompatActivity implements NavigationView.OnN
     }
 
 
-
-    @Override
-    public void onMapClick(LatLng latLng) {
-
-    }
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setOnMapClickListener(this);
+        mMap.setOnMarkerDragListener(this);
 
         // Add a marker in Sydney and move the camera
 
         try {
-            List<Address> addreses = geocoder.getFromLocationName("", 1);
+            List<Address> addreses = geocoder.getFromLocation(-33.86,151.20, 1);
             if (addreses.size() > 0) {
                 Address address = addreses.get(0);
                 LatLng london = new LatLng(address.getLatitude(), address.getLongitude());
                 MarkerOptions markerOptions = new MarkerOptions()
-                        .position(london)
+                        .position(london).draggable(true)
                         .title(address.getLocality());
-                //mMap.addMarker(markerOptions);
+                mMap.addMarker(markerOptions);
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(london, 16));
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         goLocation();
+    }
+    @Override
+    public void onMapClick(LatLng latLng) {
+
+        try {
+            List<Address> addreses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+            if (addreses.size() > 0) {
+                Address address = addreses.get(0);
+                String streetAdress = address.getAddressLine(0);
+                mMap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .title(streetAdress) //marker üzerinde adres yazıyor
+                        .draggable(true).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)) //suruklenebilir
+
+
+                );
+                eViewModel= ViewModelProviders.of(this).get(EventViewModel.class);
+                eViewModel.init();
+                eViewModel.sendData(streetAdress);
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     public void goLocation(){
         Intent data = getIntent();
@@ -214,6 +276,62 @@ public class ExpTestMain extends AppCompatActivity implements NavigationView.OnN
 
         }
     }
+    @Override
+    public void onMarkerDragStart(Marker marker) {
+        Log.d(TAG, "OnMarkerDragStart" + marker.getPosition().latitude);
+        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+    }
+
+    @Override
+    public void onMarkerDrag(Marker marker) {
+        Log.d(TAG, "OnMarkerDrag"+ marker.getPosition());
+        // marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+
+    }
+
+    @Override
+    public void onMarkerDragEnd(Marker marker) {
+        Log.d(TAG, "OnMarkerDragEnd"+marker.getPosition());
+        //marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+        LatLng latLng = marker.getPosition();
+        try {
+            List<Address> addreses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+            if (addreses.size() > 0) {
+                Address address = addreses.get(0);
+                String streetAdress = address.getAddressLine(0);
+                marker.setTitle(streetAdress);
+                marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                eViewModel= ViewModelProviders.of(this).get(EventViewModel.class);
+                eViewModel.init();
+                eViewModel.sendData(streetAdress);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+/*
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.btn_add:
+                fabAdd.hide();
+                //fabCheck.show();
+                break;
+            case R.id.btn_check:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, EventFragment.newInstance())
+                        .commit();
+                startActivityForResult(getIntent(), ADD_NOTE_REQUEST);
+
+                break;
+
+            default:
+        }
 
 
+
+    }
+
+ */
 }
