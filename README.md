@@ -1,5 +1,5 @@
 # Event Planning Application
-MVVM + LiveData + DataBinding + Fragment + Activity + Google Maps Api  developed using 
+MVVM + LiveData + DataBinding + Room + Fragment + Activity + Google Maps Api  developed using 
 
 Application is a basic location-based event planning application.
 
