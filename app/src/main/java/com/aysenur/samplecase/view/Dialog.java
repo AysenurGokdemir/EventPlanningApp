@@ -19,10 +19,15 @@ public class Dialog extends DialogFragment {
                 .setPositiveButton("yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Intent iff =new Intent(getActivity(), ExpTestMain.class);
-                        startActivity(iff);
+                        Intent intent =new Intent(getActivity(), ExpTestMain.class);
+                        startActivity(intent);
                     }
-                });
+                }).setNegativeButton("no", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+               dismiss();
+            }
+        });
         return builder.create();
     }
 }
