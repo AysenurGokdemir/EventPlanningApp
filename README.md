@@ -1,7 +1,7 @@
 # SampleCase
 MVVM + LiveData + dataBinding + Fragment + Activity + Google Maps Api
 
-Application is a basic mobile work order application.
+Application is a basic location-based event planning application.
 
 <ul>
   <li>Login screen</li>
