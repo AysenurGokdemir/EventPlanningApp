@@ -1,4 +1,4 @@
-# SampleCase
+# Event Planning Application
 MVVM + LiveData + dataBinding + Fragment + Activity + Google Maps Api
 
 Application is a basic location-based event planning application.
