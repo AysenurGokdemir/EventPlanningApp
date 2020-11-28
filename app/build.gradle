@@ -3,9 +3,7 @@ project.ext {
     constraintlayout = "2.0.0-alpha2"
     arch = "2.0.0"
     room_version = "2.2.5"
-    retrofit = "2.0.2"
     constraintLayout = "1.0.2"
-    dagger_version = "2.16"
 }
 
 
@@ -59,15 +57,6 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:$project.room_version"
     implementation "androidx.room:room-runtime:$project.room_version"
 
-    // Retrofit
-    implementation "com.squareup.retrofit2:retrofit:$project.retrofit"
-    implementation "com.squareup.retrofit2:converter-gson:$project.retrofit"
-    // Dagger
-    annotationProcessor "com.google.dagger:dagger-android-processor:$dagger_version"
-    annotationProcessor "com.google.dagger:dagger-compiler:$dagger_version"
-    implementation "com.google.dagger:dagger:$project.dagger_version"
-    implementation "com.google.dagger:dagger-android:$project.dagger_version"
-    implementation "com.google.dagger:dagger-android-support:$project.dagger_version"
 
     testImplementation 'junit:junit:4.12'
 }

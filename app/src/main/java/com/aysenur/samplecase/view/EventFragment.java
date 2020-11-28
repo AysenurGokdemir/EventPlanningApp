@@ -60,9 +60,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
                     jobTitle.setText(s);
                     Toast.makeText(getContext(),s, Toast.LENGTH_SHORT).show();
                 }
-                else{
-                    startActivity(new Intent(getActivity(),ExpTestMain.class));
-                }
+
             }
         });
 

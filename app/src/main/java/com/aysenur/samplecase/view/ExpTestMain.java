@@ -53,7 +53,8 @@ public class ExpTestMain extends AppCompatActivity implements NavigationView.OnN
     private Toolbar toolbar;
     private GoogleMap mMap;
     private Geocoder geocoder;
-    public FloatingActionButton fabAdd;
+    private FloatingActionButton fabAdd;
+    private Marker marker;
     int sayac=0;
 
     @Override
@@ -119,14 +120,19 @@ public class ExpTestMain extends AppCompatActivity implements NavigationView.OnN
                 MarkerOptions markerOptions = new MarkerOptions()
                         .position(london).draggable(true)
                         .title(address.getLocality());
-                mMap.addMarker(markerOptions);
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(london, 16));
+                    mMap.addMarker(markerOptions);
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(london, 10));
+
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         goLocation();
     }
+
+
+
     @Override
     public void onMapClick(LatLng latLng) {
 
@@ -181,6 +187,7 @@ public class ExpTestMain extends AppCompatActivity implements NavigationView.OnN
                 eViewModel= ViewModelProviders.of(this).get(EventViewModel.class);
                 eViewModel.init();
                 eViewModel.sendData(streetAdress);
+
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -196,11 +203,13 @@ public class ExpTestMain extends AppCompatActivity implements NavigationView.OnN
                 fabAdd.setImageResource(ic_check);
                  if (sayac==2){
                      fabAdd.hide();
-
+                     if (marker!=null)
+                         marker.remove();
+                        sayac=0;
                      getSupportFragmentManager().beginTransaction()
                              .replace(R.id.fragment_container, EventFragment.newInstance())
                              .commit();
-                     startActivityForResult(getIntent(), ADD_NOTE_REQUEST);
+
                  }
 
                 break;
@@ -294,6 +303,7 @@ public class ExpTestMain extends AppCompatActivity implements NavigationView.OnN
                     LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
                     mMap.addMarker(new MarkerOptions().position(latLng).title(title));
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();
