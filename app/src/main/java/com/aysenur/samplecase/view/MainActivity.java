@@ -42,7 +42,7 @@ import androidx.lifecycle.ViewModelProviders;
 import static com.aysenur.samplecase.R.drawable.ic_check;
 
 
-public class ExpTestMain extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerDragListener, View.OnClickListener {
 
     public static final int ADD_NOTE_REQUEST = 1;
@@ -203,8 +203,6 @@ public class ExpTestMain extends AppCompatActivity implements NavigationView.OnN
                 fabAdd.setImageResource(ic_check);
                  if (sayac==2){
                      fabAdd.hide();
-                     if (marker!=null)
-                         marker.remove();
                         sayac=0;
                      getSupportFragmentManager().beginTransaction()
                              .replace(R.id.fragment_container, EventFragment.newInstance())
@@ -218,6 +216,10 @@ public class ExpTestMain extends AppCompatActivity implements NavigationView.OnN
 
 
 
+    }
+
+    void removeMarker(){
+       marker.remove();
     }
 
     void setExpandableListView() {
@@ -295,7 +297,7 @@ public class ExpTestMain extends AppCompatActivity implements NavigationView.OnN
         String title = data.getStringExtra(ExpTestAdapter.EXTRA_TITLE);
 
         if (data!=null){
-            Geocoder geocoder = new Geocoder(ExpTestMain.this);
+            Geocoder geocoder = new Geocoder(MainActivity.this);
             try {
                 List<Address> addressList=geocoder.getFromLocationName(title,1);
                 if (addressList.size() > 0) {

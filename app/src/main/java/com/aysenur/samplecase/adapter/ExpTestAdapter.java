@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.aysenur.samplecase.R;
 import com.aysenur.samplecase.db.model.Event;
-import com.aysenur.samplecase.view.ExpTestMain;
+import com.aysenur.samplecase.view.MainActivity;
 import com.aysenur.samplecase.view.NotEditable;
 
 import java.util.List;
@@ -117,7 +117,7 @@ public class ExpTestAdapter extends BaseExpandableListAdapter  {
             @Override
             public void onClick(View view) {
                 String title=expandableListDetail.get(listPosition).getJobName();
-                Intent data= new Intent(context, ExpTestMain.class);
+                Intent data= new Intent(context, MainActivity.class);
                 data.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 data.putExtra(EXTRA_TITLE,title);
                 context.startActivity(data);

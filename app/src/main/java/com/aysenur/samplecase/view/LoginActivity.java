@@ -60,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 else {
                     Log.d(TAG, user.getMail());
-                    Intent i=new Intent(LoginActivity.this, ExpTestMain.class);
+                    Intent i=new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(i);
                 }
             }

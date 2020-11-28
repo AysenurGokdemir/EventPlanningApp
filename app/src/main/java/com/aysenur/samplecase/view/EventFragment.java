@@ -31,6 +31,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
 
     public static EventFragment newInstance(){return new EventFragment();}
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -42,6 +43,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
         cancel=view.findViewById(R.id.cancel);
         save.setOnClickListener(this);
         cancel.setOnClickListener(this);
+
 
 
         return view;
@@ -75,7 +77,6 @@ public class EventFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.cancel:
                 openDialog();
-
                 break;
 
             default:
@@ -94,7 +95,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
             Event event = new Event(title, desc);
             eViewModel.insert(event);
             Toast.makeText(getActivity(), "Form Saved", Toast.LENGTH_SHORT).show();
-            Intent i=new Intent(getActivity(),ExpTestMain.class);
+            Intent i=new Intent(getActivity(), MainActivity.class);
             startActivity(i);
         }
     }
