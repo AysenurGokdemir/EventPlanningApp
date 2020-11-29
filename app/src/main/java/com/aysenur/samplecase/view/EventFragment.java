@@ -21,29 +21,30 @@ import androidx.lifecycle.ViewModelProviders;
 
 public class EventFragment extends Fragment implements View.OnClickListener {
 
-    public static final String EXTRA_TITLE ="EXTRA_TITLE";
-    public static final String EXTRA_DESC ="EXTRA_DESC";
+    public static final String EXTRA_TITLE = "EXTRA_TITLE";
+    public static final String EXTRA_DESC = "EXTRA_DESC";
     private EventViewModel eViewModel;
     private EditText jobTitle;
     private EditText jobDesc;
     private Button save;
     private Button cancel;
 
-    public static EventFragment newInstance(){return new EventFragment();}
+    public static EventFragment newInstance() {
+        return new EventFragment();
+    }
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_add_event,container, false);
-        jobTitle=view.findViewById(R.id.edt_title);
-        jobDesc=view.findViewById(R.id.edt_desc);
-        save=view.findViewById(R.id.add);
-        cancel=view.findViewById(R.id.cancel);
+        View view = inflater.inflate(R.layout.fragment_add_event, container, false);
+        jobTitle = view.findViewById(R.id.edt_title);
+        jobDesc = view.findViewById(R.id.edt_desc);
+        save = view.findViewById(R.id.add);
+        cancel = view.findViewById(R.id.cancel);
         save.setOnClickListener(this);
         cancel.setOnClickListener(this);
-
 
 
         return view;
@@ -54,13 +55,13 @@ public class EventFragment extends Fragment implements View.OnClickListener {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        eViewModel= ViewModelProviders.of(this).get(EventViewModel.class);
+        eViewModel = ViewModelProviders.of(this).get(EventViewModel.class);
         ViewModelProviders.of(getActivity()).get(EventViewModel.class).getMessage().observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                if (s!=null) {
+                if (s != null) {
                     jobTitle.setText(s);
-                    Toast.makeText(getContext(),s, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), s, Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -71,7 +72,7 @@ public class EventFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
 
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.add:
                 saveEvent();
                 break;
@@ -84,25 +85,25 @@ public class EventFragment extends Fragment implements View.OnClickListener {
 
     }
 
-    private void saveEvent(){
-        String title=jobTitle.getText().toString();
-        String desc=jobDesc.getText().toString();
+    private void saveEvent() {
+        String title = jobTitle.getText().toString();
+        String desc = jobDesc.getText().toString();
         eViewModel = ViewModelProviders.of(this).get(EventViewModel.class);
         if (title.trim().isEmpty() || desc.trim().isEmpty()) {
             Toast.makeText(getActivity(), "please insert a title and description", Toast.LENGTH_SHORT).show();
             return;
-        }else{
+        } else {
             Event event = new Event(title, desc);
             eViewModel.insert(event);
             Toast.makeText(getActivity(), "Form Saved", Toast.LENGTH_SHORT).show();
-            Intent i=new Intent(getActivity(), MainActivity.class);
+            Intent i = new Intent(getActivity(), MainActivity.class);
             startActivity(i);
         }
     }
 
 
-        public void openDialog(){
-        Dialog dialog= new Dialog();
-        dialog.show(getFragmentManager(),"Dialog");
-        }
+    public void openDialog() {
+        Dialog dialog = new Dialog();
+        dialog.show(getFragmentManager(), "Dialog");
+    }
 }

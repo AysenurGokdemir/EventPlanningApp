@@ -48,6 +48,8 @@ public abstract class EventDatabase extends RoomDatabase {
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {return null; }
+        protected Void doInBackground(Void... voids) {
+            return null;
+        }
     }
 }
