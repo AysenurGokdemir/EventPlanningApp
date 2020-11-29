@@ -31,4 +31,5 @@ public class NotEditable extends AppCompatActivity {
         edt_title.setInputType(InputType.TYPE_NULL);
         edt_desc.setInputType(InputType.TYPE_NULL);
     }
+
 }
