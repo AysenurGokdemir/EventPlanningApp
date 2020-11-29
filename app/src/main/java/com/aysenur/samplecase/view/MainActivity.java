@@ -9,10 +9,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListView;
-import android.widget.Toast;
 
 import com.aysenur.samplecase.R;
-import com.aysenur.samplecase.adapter.ExpTestAdapter;
+import com.aysenur.samplecase.adapter.ExpAdapter;
 import com.aysenur.samplecase.db.model.Event;
 import com.aysenur.samplecase.viewmodel.EventViewModel;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -45,29 +44,30 @@ import static com.aysenur.samplecase.R.drawable.ic_check;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerDragListener, View.OnClickListener {
 
-    public static final int ADD_NOTE_REQUEST = 1;
+
     public static final String TAG = "Maps";
     private EventViewModel eViewModel;
     private ExpandableListView expandableListView;
-    private ExpTestAdapter expandableListAdapter;
+    private ExpAdapter expandableListAdapter;
     private Toolbar toolbar;
     private GoogleMap mMap;
     private Geocoder geocoder;
     private FloatingActionButton fabAdd;
-    private Marker marker;
-    int sayac=0;
+    private Marker marker = null;
+    int sayac = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getInit();
+        expandableListView = findViewById(R.id.exp_list_view);
         fabAdd = findViewById(R.id.btn_add);
         fabAdd.setOnClickListener(this);
 
         eViewModel = ViewModelProviders.of(this).get(EventViewModel.class);
 
-        expandableListAdapter=new ExpTestAdapter(this);
+        expandableListAdapter = new ExpAdapter(this);
 
         setExpandableListView();
 
@@ -81,17 +81,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer=findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)){
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }else {
+        } else {
             super.onBackPressed();
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.add_event_menu,menu);
+        getMenuInflater().inflate(R.menu.add_event_menu, menu);
 
         return true;
     }
@@ -102,7 +102,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {return false;}
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        return false;
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -113,24 +115,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Add a marker in Sydney and move the camera
 
         try {
-            List<Address> addreses = geocoder.getFromLocation(-33.86,151.20, 1);
+            List<Address> addreses = geocoder.getFromLocation(-33.86, 151.20, 1);
             if (addreses.size() > 0) {
                 Address address = addreses.get(0);
                 LatLng london = new LatLng(address.getLatitude(), address.getLongitude());
                 MarkerOptions markerOptions = new MarkerOptions()
                         .position(london).draggable(true)
                         .title(address.getLocality());
-                    mMap.addMarker(markerOptions);
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(london, 10));
+                marker = mMap.addMarker(markerOptions);
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(london, 16));
 
             }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         goLocation();
     }
-
 
 
     @Override
@@ -143,12 +145,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 String streetAdress = address.getAddressLine(0);
                 mMap.addMarker(new MarkerOptions()
                         .position(latLng)
-                        .title(streetAdress) //marker üzerinde adres yazıyor
-                        .draggable(true).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)) //suruklenebilir
+                        .title(streetAdress)
+                        .draggable(true).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
 
 
                 );
-                eViewModel= ViewModelProviders.of(this).get(EventViewModel.class);
+                eViewModel = ViewModelProviders.of(this).get(EventViewModel.class);
                 eViewModel.init();
                 eViewModel.sendData(streetAdress);
 
@@ -166,15 +168,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onMarkerDrag(Marker marker) {
-        Log.d(TAG, "OnMarkerDrag"+ marker.getPosition());
-        // marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-
+        Log.d(TAG, "OnMarkerDrag" + marker.getPosition());
     }
 
     @Override
     public void onMarkerDragEnd(Marker marker) {
-        Log.d(TAG, "OnMarkerDragEnd"+marker.getPosition());
-        //marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+        Log.d(TAG, "OnMarkerDragEnd" + marker.getPosition());
+
         LatLng latLng = marker.getPosition();
         try {
             List<Address> addreses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
@@ -183,8 +183,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 String streetAdress = address.getAddressLine(0);
                 marker.setTitle(streetAdress);
                 marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
-                eViewModel= ViewModelProviders.of(this).get(EventViewModel.class);
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+                eViewModel = ViewModelProviders.of(this).get(EventViewModel.class);
                 eViewModel.init();
                 eViewModel.sendData(streetAdress);
 
@@ -197,114 +197,83 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.btn_add:
-                 sayac++;
+                sayac++;
                 fabAdd.setImageResource(ic_check);
-                 if (sayac==2){
-                     fabAdd.hide();
-                        sayac=0;
-                     getSupportFragmentManager().beginTransaction()
-                             .replace(R.id.fragment_container, EventFragment.newInstance())
-                             .commit();
+                if (sayac == 2) {
+                    fabAdd.hide();
+                    sayac = 0;
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, EventFragment.newInstance())
+                            .commit();
 
-                 }
+                }
 
                 break;
             default:
         }
 
 
-
     }
 
-    void removeMarker(){
-       marker.remove();
+    void removeMarker() {
+        marker.remove();
     }
 
     void setExpandableListView() {
 
         expandableListDataPump();
-        expandableListView = findViewById(R.id.exp_list_view);
-        expandableListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-            @Override
-            public void onGroupCollapse(int groupPosition) {
-                Toast.makeText(getApplicationContext(),
-                        " List Collapsed." ,
-                        Toast.LENGTH_SHORT).show();
 
-            }
-        });
     }
 
     public void expandableListDataPump() {
+
         eViewModel = ViewModelProviders.of(this).get(EventViewModel.class);
-        /*
-        Intent data = getIntent();
-        String title = data.getStringExtra(EventFragment.EXTRA_TITLE);
-        String desc = data.getStringExtra(EventFragment.EXTRA_DESC);
 
-        Event event = new Event(title, desc);
-        eViewModel.insert(event);
-
-        Toast.makeText(this, "Note Saved", Toast.LENGTH_SHORT).show();
-
-*/
         eViewModel.getAllEvents().observe(this, new Observer<List<Event>>() {
             @Override
             public void onChanged(List<Event> events) {
-                //expandableListAdapter.setEvents(events);
-                if (events.size()>0){
+
+                if (events.size() > 0) {
+
                     expandableListAdapter.setData(events);
                     expandableListView.setAdapter(expandableListAdapter);
                 }
-
-
-                //expandableListAdapter.notifyDataSetChanged();
-
-                expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-                    @Override
-                    public void onGroupExpand(int groupPosition) {
-
-
-                        Toast.makeText(getApplicationContext(), " List Expanded."+ events.get(groupPosition).getJobName(),
-                                Toast.LENGTH_SHORT).show();
-
-                    }
-                });
-
             }
         });
 
-
     }
 
-    public void getInit(){
+    public void getInit() {
 
         setSupportActionBar(toolbar);
-
-        DrawerLayout drawer= findViewById(R.id.drawer_layout);
-        NavigationView navView=findViewById(R.id.nav_view);
-        toolbar=findViewById(R.id.toolbar);
-        ActionBarDrawerToggle toggle=new ActionBarDrawerToggle(this, drawer, toolbar,R.string.Open,R.string.Close);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        NavigationView navView = findViewById(R.id.nav_view);
+        toolbar = findViewById(R.id.toolbar);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.Open, R.string.Close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navView.setNavigationItemSelectedListener(this);
     }
 
-    public void goLocation(){
+    public void goLocation() {
         Intent data = getIntent();
-        String title = data.getStringExtra(ExpTestAdapter.EXTRA_TITLE);
+        String title = data.getStringExtra(ExpAdapter.EXTRA_TITLE);
 
-        if (data!=null){
+        if (data != null) {
             Geocoder geocoder = new Geocoder(MainActivity.this);
             try {
-                List<Address> addressList=geocoder.getFromLocationName(title,1);
+                List<Address> addressList = geocoder.getFromLocationName(title, 1);
                 if (addressList.size() > 0) {
                     Address address = addressList.get(0);
                     LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                    mMap.addMarker(new MarkerOptions().position(latLng).title(title));
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                    if (marker != null) {
+                        removeMarker();
+                        marker = mMap.addMarker(new MarkerOptions().position(latLng).title(title));
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                    }
+
 
                 }
             } catch (Exception e) {
