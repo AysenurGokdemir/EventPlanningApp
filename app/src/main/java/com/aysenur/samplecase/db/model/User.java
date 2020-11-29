@@ -18,14 +18,14 @@ public class User {
     }
 
     @NonNull
-    public String getMail() {return mail;}
-
-    public void setMail(@NonNull String mail) {this.mail = mail;}
+    public String getMail() {
+        return mail;
+    }
 
     @NonNull
-    public String getPassword() {return password;}
-
-    public void setPassword(@NonNull String password) {this.password = password;}
+    public String getPassword() {
+        return password;
+    }
 
     public boolean isEmailValid() {
         return Patterns.EMAIL_ADDRESS.matcher(getMail()).matches();

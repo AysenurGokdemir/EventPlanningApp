@@ -15,19 +15,18 @@ public class LoginViewModel extends ViewModel {
 
     private MutableLiveData<User> userMutableLiveData;
 
-    public MutableLiveData<User> getUSer(){
-        if (userMutableLiveData ==  null){
-            userMutableLiveData= new MutableLiveData<>();
+    public MutableLiveData<User> getUSer() {
+        if (userMutableLiveData == null) {
+            userMutableLiveData = new MutableLiveData<>();
         }
 
         return userMutableLiveData;
     }
 
 
+    public void onClick(View view) {
 
-    public void onClick(View view){
-
-        User user= new User(mailAdress.getValue(), password.getValue());
+        User user = new User(mailAdress.getValue(), password.getValue());
 
         userMutableLiveData.setValue(user);
 

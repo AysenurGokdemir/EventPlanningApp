@@ -20,10 +20,9 @@ import androidx.lifecycle.ViewModelProviders;
 
 public class LoginActivity extends AppCompatActivity {
 
-    public static final String TAG="result";
+    public static final String TAG = "result";
     private LoginViewModel loginViewModel;
     private ActivityLoginBinding binding;
-
 
 
     @Override
@@ -40,27 +39,23 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onChanged(User user) {
 
-                if (TextUtils.isEmpty(Objects.requireNonNull(user).getMail())){
+                if (TextUtils.isEmpty(Objects.requireNonNull(user).getMail())) {
                     binding.inEmail.setError("Enter an E-Mail Address");
                     binding.inEmail.requestFocus();
-                }
-                else if (!user.isEmailValid()){
+                } else if (!user.isEmailValid()) {
                     binding.inEmail.setError("Enter a Valid E-Mail Address");
                     binding.inEmail.requestFocus();
-                }
-                else if (TextUtils.isEmpty(Objects.requireNonNull(user).getPassword())){
+                } else if (TextUtils.isEmpty(Objects.requireNonNull(user).getPassword())) {
                     binding.inPassword.setError("Enter a Password");
                     binding.inPassword.requestFocus();
 
 
-                }
-                else if (!user.isPasswordLengthGreaterThan5()){
+                } else if (!user.isPasswordLengthGreaterThan5()) {
                     binding.inPassword.setError("Enter st least 6 Digit password");
                     binding.inPassword.requestFocus();
-                }
-                else {
+                } else {
                     Log.d(TAG, user.getMail());
-                    Intent i=new Intent(LoginActivity.this, MainActivity.class);
+                    Intent i = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(i);
                 }
             }
