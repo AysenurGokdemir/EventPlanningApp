@@ -11,6 +11,9 @@ Application is a basic location-based event planning application.
   created.
  </ul>
  
+ 
+ <!--
+ 
  <table><tr><td valign="top" width="50%">
 
 <img height="450" src="https://user-images.githubusercontent.com/28164758/100554424-aa1dbb80-32a5-11eb-9091-260ad0cb9fd0.png">
@@ -20,4 +23,5 @@ Application is a basic location-based event planning application.
 
 </td></tr></table>
 
+-->
                                                                                                                            
