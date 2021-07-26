@@ -12,7 +12,7 @@ Application is a basic location-based event planning application.
  </ul>
  
  
- <!--
+ 
  
  <table><tr><td valign="top" width="50%">
 
@@ -23,5 +23,5 @@ Application is a basic location-based event planning application.
 
 </td></tr></table>
 
--->
+
                                                                                                                            
